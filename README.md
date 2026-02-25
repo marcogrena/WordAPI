@@ -1,0 +1,2 @@
+# WordAPI
+API Lemmario italiano
