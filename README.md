@@ -77,6 +77,7 @@ Esempio light:
 ```bash
 curl "http://localhost:3000/prefix?prefix=pre&lang=it&limit=5&light=true"
 ```
+Esempio richiesta light c++:
 ```bash
 g++ request.cpp -o example -lcurl
 ./example
