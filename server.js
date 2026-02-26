@@ -43,7 +43,7 @@ app.use(express.json());
  * lang: 'it' (default) o 'en'
  */
 app.get('/search', (req, res) => {
-  const { word, lang = 'it' } = req.query;
+  const { word, lang = 'it', light } = req.query;
 
   if (!word) {
     return res.status(400).json({
@@ -62,6 +62,11 @@ app.get('/search', (req, res) => {
   const cleanWord = word.toLowerCase().trim();
   const exists = words[lang].has(cleanWord);
 
+  const isLight = ['true', '1', 'yes'].includes(String(light).toLowerCase());
+  if (isLight) {
+    return res.json(exists);
+  }
+
   res.json({
     word: cleanWord,
     lang: lang,
@@ -79,7 +84,7 @@ app.get('/search', (req, res) => {
  * limit: numero massimo di risultati (default: 100)
  */
 app.get('/prefix', (req, res) => {
-  const { prefix, lang = 'it', limit = 100 } = req.query;
+  const { prefix, lang = 'it', limit = 100, light } = req.query;
 
   if (!prefix) {
     return res.status(400).json({
@@ -102,6 +107,11 @@ app.get('/prefix', (req, res) => {
     .filter(word => word.startsWith(cleanPrefix))
     .sort()
     .slice(0, limitNum);
+
+  const isLight = ['true', '1', 'yes'].includes(String(light).toLowerCase());
+  if (isLight) {
+    return res.json(results);
+  }
 
   res.json({
     prefix: cleanPrefix,
@@ -131,7 +141,8 @@ app.get('/info', (req, res) => {
         description: 'Cerca se una parola esiste nel database',
         params: {
           word: 'string (obbligatorio)',
-          lang: 'string - "it" o "en" (default: "it")'
+          lang: 'string - "it" o "en" (default: "it")',
+          light: 'boolean - risposta leggera (default: false)'
         }
       },
       prefix: {
@@ -140,7 +151,8 @@ app.get('/info', (req, res) => {
         params: {
           prefix: 'string (obbligatorio)',
           lang: 'string - "it" o "en" (default: "it")',
-          limit: 'number - max risultati (default: 100)'
+          limit: 'number - max risultati (default: 100)',
+          light: 'boolean - risposta leggera (default: false)'
         }
       }
     }
